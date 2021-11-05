@@ -1,0 +1,33 @@
+{
+  "name": "std-react-query",
+  "packageManager": "yarn@3.1.0",
+  "scripts": {
+    "dev": "next dev"
+  },
+  "devDependencies": {
+    "@types/babel__core": "^7",
+    "@types/node": "^16.11.6",
+    "@types/react": "^17",
+    "@types/react-dom": "^17",
+    "@typescript-eslint/eslint-plugin": "^5.3.0",
+    "@typescript-eslint/parser": "^5.3.0",
+    "eslint": "^8.1.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^14.0.1",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.26.1",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "@babel/core": "^7.16.0",
+    "@babel/preset-typescript": "^7.16.0",
+    "next": "^12.0.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-query": "^3.31.0"
+  }
+}
