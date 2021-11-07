@@ -16,3 +16,6 @@
 
 /.next
 /coverage
+
+
+/node_modules
