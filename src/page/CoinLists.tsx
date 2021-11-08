@@ -77,7 +77,7 @@ const CoinLists = (): JSX.Element => {
       {!isLoading ? (
         <div>
           {data.map((coin: ICoin) => (
-            <CoinList key={coin.id} coin={coin} />
+            <CoinList key={coin.id} coin={coin} country={market} />
           ))}
           {isFetching && <p>...loading</p>}
           <button onClick={morePage}>more</button>
