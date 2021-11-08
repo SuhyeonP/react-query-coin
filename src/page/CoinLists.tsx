@@ -13,21 +13,25 @@ const CoinLists = (): JSX.Element => {
   const [market, setMarket] = useState<market>('krw');
   const [order, setOrder] = useState<coinOrder>('market_cap_desc');
   const [perPage, setPerPage] = useState<number>(50);
+  const [more, setMore] = useState<number>(perPage);
   const [page, setPage] = useState<number>(1);
 
-  const { data, isLoading, status, error, isFetching } = useQuery(
-    ['coins', market, order, perPage, page],
-    async () => await getCoinList(market, order, perPage, page)
-  );
+  const { data, isLoading, status, error, isFetching, isPreviousData } =
+    useQuery(
+      ['coins', market, order, more, page],
+      async () => await getCoinList(market, order, more, page),
+      { keepPreviousData: true, staleTime: 5000 }
+    );
 
   useEffect(() => {
-    if (data) {
+    console.log(isPreviousData || !data?.hasMore);
+    if (data?.hasmore) {
       queryClient.prefetchQuery(
-        ['coins', market, order, perPage, page],
-        async () => await getCoinList(market, order, perPage, page)
+        ['coins', market, order, more, page],
+        async () => await getCoinList(market, order, more, page)
       );
     }
-  }, [data, view, market, page, perPage]);
+  }, [data, market, page, more, queryClient]);
 
   const onChangeView = useCallback(e => {
     setView(e.target.value);
@@ -39,7 +43,12 @@ const CoinLists = (): JSX.Element => {
 
   const onChangePageView = useCallback(e => {
     setPerPage(Number(e.target.value));
+    setMore(Number(e.target.value));
   }, []);
+
+  const morePage = useCallback(() => {
+    setMore(prev => prev + perPage);
+  }, [perPage]);
 
   return (
     <>
@@ -69,6 +78,8 @@ const CoinLists = (): JSX.Element => {
           {data.map((coin: ICoin) => (
             <CoinList key={coin.id} coin={coin} />
           ))}
+          {isFetching && <p>...loading</p>}
+          <button onClick={morePage}>more</button>
         </div>
       ) : (
         <div>loading</div>
