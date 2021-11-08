@@ -1,1 +1,2 @@
-# std-react-query
+* cra basic-template with std
+* using router
