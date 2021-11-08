@@ -25,6 +25,7 @@ const CoinLists = (): JSX.Element => {
 
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore);
+    // todo 이게 뭔지
     if (data?.hasmore) {
       queryClient.prefetchQuery(
         ['coins', market, order, more, page],
