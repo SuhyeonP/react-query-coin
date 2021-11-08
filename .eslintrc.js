@@ -25,7 +25,7 @@ module.exports = {
     '@typescript-eslint/no-use-before-define': 'off',
     '@typescript-eslint/no-var': 'off',
     '@typescript-eslint/quotes': [
-      'error',
+      'warn',
       'single',
       { avoidEscape: true, allowTemplateLiterals: false }
     ],

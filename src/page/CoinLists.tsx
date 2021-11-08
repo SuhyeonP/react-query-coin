@@ -1,21 +1,30 @@
-import React from 'react';
-import {useQuery} from "react-query";
-import {getCoinList} from "../domain/coin/api";
-import {ICoin} from "../domain/coin/type";
-import CoinList from "../component/CoinList";
+import React, { useState } from 'react';
+import { useQuery } from 'react-query';
+import { getCoinList } from '../domain/coin/api';
+import { coinOrder, ICoin, market } from '../domain/coin/type';
+import CoinList from '../component/CoinList';
 
 const CoinLists = (): JSX.Element => {
-    const { data, isLoading} = useQuery('coins', async () => await getCoinList())
+  const [market, setMarket] = useState<market>('krw');
+  const [order, setOrder] = useState<coinOrder>('market_cap_desc');
+  const [perPage, setPerPage] = useState<number>(50);
+  const [page, setPage] = useState<number>(1);
 
-    return (
+  const { data, isLoading } = useQuery(
+    'coins',
+    async () => await getCoinList(market, order, perPage, page)
+  );
+  return (
+    <>
+      {!isLoading && (
         <div>
-            {!isLoading && (
-                data.map((coin: ICoin) => (
-                    <CoinList key={coin.id} coin={coin} />
-                ))
-            )}
+          {data.map((coin: ICoin) => (
+            <CoinList key={coin.id} coin={coin} />
+          ))}
         </div>
-    )
-}
+      )}
+    </>
+  );
+};
 
 export default CoinLists;
