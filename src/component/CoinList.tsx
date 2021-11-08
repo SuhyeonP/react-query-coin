@@ -15,6 +15,7 @@ const CoinList = (props: ICoinList): JSX.Element => {
       <p>{coin.price_change_percentage_1h_in_currency}</p>
       <p>{coin.price_change_percentage_24h_in_currency}</p>
       <p>{coin.price_change_percentage_7d_in_currency}</p>
+      <p>{coin.total_volume}</p>
     </CoinListStyled>
   );
 };
