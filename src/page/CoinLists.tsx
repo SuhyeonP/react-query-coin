@@ -3,6 +3,8 @@ import { QueryClient, useQuery } from 'react-query';
 import { getCoinList } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
+import { CoinListStyled } from '../component/styles';
+import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const CoinLists = (): JSX.Element => {
   const queryClient = new QueryClient();
@@ -52,7 +54,7 @@ const CoinLists = (): JSX.Element => {
   }, [perPage]);
 
   return (
-    <>
+    <CoinListsStyled>
       <select value={view} onChange={onChangeView}>
         {viewOption.map(view => (
           <option value={view.value} key={view.value}>
@@ -74,18 +76,45 @@ const CoinLists = (): JSX.Element => {
           </option>
         ))}
       </select>
-      {!isLoading ? (
-        <div>
-          {data.map((coin: ICoin) => (
-            <CoinList key={coin.id} coin={coin} country={market} />
-          ))}
-          {isFetching && <p>...loading</p>}
-          <button onClick={morePage}>more</button>
-        </div>
-      ) : (
-        <div>loading</div>
-      )}
-    </>
+      <CoinTableStyled>
+        <thead>
+          <tr>
+            <th colSpan={1} />
+            <TableTitleAlign align="left" colSpan={2}>
+              자산
+            </TableTitleAlign>
+            <TableTitleAlign align="right">Price</TableTitleAlign>
+            <TableTitleAlign align="right">1H</TableTitleAlign>
+            <TableTitleAlign align="right">24H</TableTitleAlign>
+            <TableTitleAlign align="right">7D</TableTitleAlign>
+            <TableTitleAlign align="right">24H Volume</TableTitleAlign>
+          </tr>
+        </thead>
+        <tbody>
+          {!isLoading ? (
+            <>
+              {data.map((coin: ICoin) => (
+                <CoinList key={coin.id} coin={coin} country={market} />
+              ))}
+              {isFetching && (
+                <tr>
+                  <td colSpan={8}>...loading</td>
+                </tr>
+              )}
+              <tr>
+                <td colSpan={8}>
+                  <button onClick={morePage}>more</button>
+                </td>
+              </tr>
+            </>
+          ) : (
+            <tr>
+              <td>loading</td>
+            </tr>
+          )}
+        </tbody>
+      </CoinTableStyled>
+    </CoinListsStyled>
   );
 };
 

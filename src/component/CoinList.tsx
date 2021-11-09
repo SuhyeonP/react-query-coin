@@ -1,7 +1,7 @@
 import React from 'react';
 import { ICoin, market } from '../domain/coin/type';
 import { checkState } from '../util';
-import { CoinListStyled, VolumeColor } from './styles';
+import { CoinInfoTd, CoinListStyled, VolumeColor } from './styles';
 
 interface ICoinList {
   coin: ICoin;
@@ -14,28 +14,38 @@ const CoinList = (props: ICoinList): JSX.Element => {
   const { coin, country } = props;
   return (
     <CoinListStyled>
-      <p>{coin.name}</p>
-      <p>{coin.symbol}</p>
-      <p>{coin.current_price}</p>
+      <td>⭐️</td>
+      <CoinInfoTd align="left" minWidth="150px">
+        {coin.name}
+      </CoinInfoTd>
+      <CoinInfoTd align="left" minWidth="50px">
+        {coin.symbol}
+      </CoinInfoTd>
+      <CoinInfoTd align="right" minWidth="120px">
+        {countryMoney[country]}&nbsp;{coin.current_price}
+      </CoinInfoTd>
       <VolumeColor
+        align="right"
         state={checkState(coin.price_change_percentage_1h_in_currency)}
       >
-        {coin.price_change_percentage_1h_in_currency.toFixed(2)}
+        {coin.price_change_percentage_1h_in_currency.toFixed(2)}%
       </VolumeColor>
       <VolumeColor
+        align="right"
         state={checkState(coin.price_change_percentage_24h_in_currency)}
       >
-        {coin.price_change_percentage_24h_in_currency.toFixed(2)}
+        {coin.price_change_percentage_24h_in_currency.toFixed(2)}%
       </VolumeColor>
       <VolumeColor
+        align="right"
         state={checkState(coin.price_change_percentage_7d_in_currency)}
       >
-        {coin.price_change_percentage_7d_in_currency.toFixed(2)}
+        {coin.price_change_percentage_7d_in_currency.toFixed(2)}%
       </VolumeColor>
-      <p>
+      <CoinInfoTd align="right" minWidth="160px">
         {countryMoney[country]}&nbsp;
         {coin.total_volume}
-      </p>
+      </CoinInfoTd>
     </CoinListStyled>
   );
 };
