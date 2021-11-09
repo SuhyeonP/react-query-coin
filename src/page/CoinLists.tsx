@@ -26,7 +26,7 @@ const CoinLists = (): JSX.Element => {
     );
 
   useEffect(() => {
-    console.log(isPreviousData || !data?.hasMore);
+    console.log(isPreviousData || !data?.hasMore, isPreviousData);
     // todo 이게 뭔지
     if (data?.hasmore) {
       queryClient.prefetchQuery(
@@ -37,7 +37,6 @@ const CoinLists = (): JSX.Element => {
   }, [data, market, page, more, queryClient]);
 
   const onChangeView = useCallback(e => {
-    console.log(e.target.value);
     setView(e.target.value);
   }, []);
 
@@ -74,6 +73,7 @@ const CoinLists = (): JSX.Element => {
           북마크목록
         </button>
       </div>
+      <br />
       {view === 'all' && (
         <>
           <select value={view.toString()} onChange={onChangeView}>
