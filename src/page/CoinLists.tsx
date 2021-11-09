@@ -8,10 +8,10 @@ import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const CoinLists = (): JSX.Element => {
   const queryClient = new QueryClient();
-  const viewOption = [{ value: '전체 보기' }, { value: '북마크 보기' }];
+  const viewOption = ['all', 'favorite'];
   const marketList = ['krw', 'usd', 'eur', 'jpy'];
   const pageViewList = [10, 30, 50];
-  const [view, setView] = useState('전체 보기');
+  const [view, setView] = useState('all');
   const [market, setMarket] = useState<market>('krw');
   const [order, setOrder] = useState<coinOrder>('market_cap_desc');
   const [perPage, setPerPage] = useState<number>(50);
@@ -37,6 +37,7 @@ const CoinLists = (): JSX.Element => {
   }, [data, market, page, more, queryClient]);
 
   const onChangeView = useCallback(e => {
+    console.log(e.target.value);
     setView(e.target.value);
   }, []);
 
@@ -53,29 +54,51 @@ const CoinLists = (): JSX.Element => {
     setMore(prev => prev + perPage);
   }, [perPage]);
 
+  const setViewMode = useCallback(
+    (state: string) => () => {
+      setView(state);
+    },
+    []
+  );
+
   return (
     <CoinListsStyled>
-      <select value={view} onChange={onChangeView}>
-        {viewOption.map(view => (
-          <option value={view.value} key={view.value}>
-            {view.value}
-          </option>
-        ))}
-      </select>
-      <select value={market} onChange={onChangeMarket}>
-        {marketList.map(ele => (
-          <option value={ele} key={ele}>
-            {ele}
-          </option>
-        ))}
-      </select>
-      <select value={perPage} onChange={onChangePageView}>
-        {pageViewList.map(ele => (
-          <option value={ele} key={ele.toString()}>
-            {ele}
-          </option>
-        ))}
-      </select>
+      <div>
+        <button onClick={setViewMode('all')} disabled={view === 'all'}>
+          가상시세목록
+        </button>
+        <button
+          onClick={setViewMode('favorite')}
+          disabled={view === 'favorite'}
+        >
+          북마크목록
+        </button>
+      </div>
+      {view === 'all' && (
+        <>
+          <select value={view.toString()} onChange={onChangeView}>
+            {viewOption.map(view => (
+              <option value={view} key={view}>
+                {view === 'all' ? '전체보기' : '북마크 보기'}
+              </option>
+            ))}
+          </select>
+          <select value={market} onChange={onChangeMarket}>
+            {marketList.map(ele => (
+              <option value={ele} key={ele}>
+                {ele}
+              </option>
+            ))}
+          </select>
+          <select value={perPage} onChange={onChangePageView}>
+            {pageViewList.map(ele => (
+              <option value={ele} key={ele.toString()}>
+                {ele}
+              </option>
+            ))}
+          </select>
+        </>
+      )}
       <CoinTableStyled>
         <thead>
           <tr>

@@ -14,7 +14,8 @@ const CoinList = (props: ICoinList): JSX.Element => {
   const { coin, country } = props;
   return (
     <CoinListStyled>
-      <td>⭐️</td>
+      <td>🌑</td>
+      {/*<td>🌕</td>*/}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}
       </CoinInfoTd>
