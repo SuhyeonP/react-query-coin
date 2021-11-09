@@ -3,7 +3,8 @@ import { css } from '@emotion/react';
 
 export const CoinTableStyled = styled.table`
   display: block;
-  margin: 20px;
+  margin: 20px auto;
+  width: 790px;
 `;
 export const CoinListsStyled = styled.div`
   display: block;

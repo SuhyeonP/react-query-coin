@@ -46,3 +46,7 @@ export const CoinInfoTd = styled.td<IAlign>(({ align, minWidth }) => {
     return base;
   }
 });
+
+export const FavoriteStyled = styled.td`
+  cursor: pointer;
+`;

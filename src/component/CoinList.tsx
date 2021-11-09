@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ICoin, market } from '../domain/coin/type';
 import { checkState } from '../util';
-import { CoinInfoTd, CoinListStyled, VolumeColor } from './styles';
+import {
+  CoinInfoTd,
+  CoinListStyled,
+  FavoriteStyled,
+  VolumeColor
+} from './styles';
 
 interface ICoinList {
   coin: ICoin;
@@ -12,18 +17,27 @@ const countryMoney = { krw: '₩', usd: '$', jpy: '¥', eur: '€' };
 
 const CoinList = (props: ICoinList): JSX.Element => {
   const { coin, country } = props;
+
+  const checkFavorite = useCallback(
+    (coin: string) => () => {
+      console.log('check favorite', coin);
+    },
+    []
+  );
+
   return (
     <CoinListStyled>
-      <td>🌑</td>
-      {/*<td>🌕</td>*/}
+      <FavoriteStyled onClick={checkFavorite(coin.symbol)}>🌑</FavoriteStyled>
+      {/*<FavoriteStyled>🌕</td>*/}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}
       </CoinInfoTd>
       <CoinInfoTd align="left" minWidth="50px">
         {coin.symbol}
       </CoinInfoTd>
-      <CoinInfoTd align="right" minWidth="120px">
-        {countryMoney[country]}&nbsp;{coin.current_price}
+      <CoinInfoTd align="right" minWidth="130px">
+        {countryMoney[country]}&nbsp;
+        {coin.current_price.toLocaleString('ko-KR')}
       </CoinInfoTd>
       <VolumeColor
         align="right"
@@ -43,9 +57,9 @@ const CoinList = (props: ICoinList): JSX.Element => {
       >
         {coin.price_change_percentage_7d_in_currency.toFixed(2)}%
       </VolumeColor>
-      <CoinInfoTd align="right" minWidth="160px">
+      <CoinInfoTd align="right" minWidth="170px">
         {countryMoney[country]}&nbsp;
-        {coin.total_volume}
+        {coin.total_volume.toLocaleString('ko-KR')}
       </CoinInfoTd>
     </CoinListStyled>
   );
