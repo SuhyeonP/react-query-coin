@@ -7,6 +7,9 @@ interface ICoinList {
   coin: ICoin;
   country: market;
 }
+
+const countryMoney = { krw: '₩', usd: '$', jpy: '¥', eur: '€' };
+
 const CoinList = (props: ICoinList): JSX.Element => {
   const { coin, country } = props;
   return (
@@ -30,7 +33,7 @@ const CoinList = (props: ICoinList): JSX.Element => {
         {coin.price_change_percentage_7d_in_currency.toFixed(2)}
       </VolumeColor>
       <p>
-        {}
+        {countryMoney[country]}&nbsp;
         {coin.total_volume}
       </p>
     </CoinListStyled>
