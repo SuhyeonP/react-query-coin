@@ -3,13 +3,12 @@ import { useMutation, useQuery } from 'react-query';
 import { useQueryClient } from 'react-query';
 import { coinOrder, market } from '../type';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getCoinList = async (
   market: market = 'krw',
   order: coinOrder = 'market_cap_desc',
   per_page = 50,
   page = 1
-) => {
+): Promise<any> => {
   const { data } = await axios.get(
     `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${market}&order=${order}c&per_page=${per_page}&page=${page}&sparkline=false&price_change_percentage=1h%2C24h%2C7d`
   );
@@ -24,14 +23,13 @@ const storageMap = {
   session: sessionStorage
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function useStorageQuery<TData>({
   type = 'session',
   storageKey
 }: {
   type?: StorageType;
   storageKey: string;
-}) {
+}): any {
   const getData = () => {
     const data = storageMap[type].getItem(storageKey);
 

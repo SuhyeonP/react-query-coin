@@ -1,9 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const checkState = (state: number) => {
+export const checkState = (state: number): string => {
   return state > 0 ? 'red' : state < 0 ? 'blue' : 'black';
 };
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const deleteCommand = (arr: string[], some: string) => {
+export const deleteCommand = (arr: string[], some: string): string[] => {
   const idx = arr.indexOf(some);
 
   if (idx > -1) {
