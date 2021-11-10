@@ -12,17 +12,22 @@ interface ICoinList {
   coin: ICoin;
   country: market;
   adding: (coin: string) => () => void;
+  favorite: boolean;
+  excepting: (coin: string) => () => void;
 }
 
 const countryMoney = { krw: '₩', usd: '$', jpy: '¥', eur: '€' };
 
 const CoinList = (props: ICoinList): JSX.Element => {
-  const { coin, country, adding } = props;
+  const { coin, country, adding, favorite, excepting } = props;
 
   return (
     <CoinListStyled>
-      <FavoriteStyled onClick={adding(coin.symbol)}>🌑</FavoriteStyled>
-      {/*<FavoriteStyled>🌕</td>*/}
+      {favorite ? (
+        <FavoriteStyled onClick={excepting(coin.symbol)}>🌕</FavoriteStyled>
+      ) : (
+        <FavoriteStyled onClick={adding(coin.symbol)}>🌑</FavoriteStyled>
+      )}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}
       </CoinInfoTd>

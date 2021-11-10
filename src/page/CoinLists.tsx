@@ -3,6 +3,7 @@ import { QueryClient, useQuery } from 'react-query';
 import { getCoinList, useStorageQuery } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
+import { deleteCommand } from '../util';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const useCustom = () => {
@@ -65,21 +66,22 @@ const CoinLists = (): JSX.Element => {
     []
   );
 
-  useEffect(() => {
-    console.log('change', query.data);
-  }, [query.data]);
-
   const addingFavorite = useCallback(
     (coin: string) => () => {
-      console.log(query.data);
-
       let temp;
       if (!query.data) {
         temp = [coin];
       } else {
         temp = (query.data as string[]).concat([coin]);
       }
-      console.log('temp', temp);
+      mutation.mutate(temp);
+    },
+    [query.data]
+  );
+
+  const excepting = useCallback(
+    (coin: string) => () => {
+      const temp = deleteCommand(query.data as string[], coin);
       mutation.mutate(temp);
     },
     [query.data]
@@ -147,6 +149,12 @@ const CoinLists = (): JSX.Element => {
                   coin={coin}
                   country={market}
                   adding={addingFavorite}
+                  excepting={excepting}
+                  favorite={
+                    query.data
+                      ? (query.data as string[]).indexOf(coin.symbol) !== -1
+                      : false
+                  }
                 />
               ))}
               {isFetching && (
