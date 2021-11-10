@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { ICoin, market } from '../domain/coin/type';
 import { checkState } from '../util';
 import {
@@ -18,16 +18,9 @@ const countryMoney = { krw: '₩', usd: '$', jpy: '¥', eur: '€' };
 const CoinList = (props: ICoinList): JSX.Element => {
   const { coin, country } = props;
 
-  const checkFavorite = useCallback(
-    (coin: string) => () => {
-      console.log('check favorite', coin);
-    },
-    []
-  );
-
   return (
     <CoinListStyled>
-      <FavoriteStyled onClick={checkFavorite(coin.symbol)}>🌑</FavoriteStyled>
+      <FavoriteStyled>🌑</FavoriteStyled>
       {/*<FavoriteStyled>🌕</td>*/}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}

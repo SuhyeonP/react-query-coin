@@ -3,7 +3,6 @@ import { QueryClient, useQuery } from 'react-query';
 import { getCoinList } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
-import { CoinListStyled } from '../component/styles';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const CoinLists = (): JSX.Element => {
