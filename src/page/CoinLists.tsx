@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { QueryClient, useQuery } from 'react-query';
-import { getCoinList } from '../domain/coin/api';
+import { getCoinList, useStorageQuery } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
+
+const useCustom = () => {
+  return useStorageQuery({ storageKey: 'favorite' });
+};
 
 const CoinLists = (): JSX.Element => {
   const queryClient = new QueryClient();
@@ -23,6 +27,8 @@ const CoinLists = (): JSX.Element => {
       async () => await getCoinList(market, order, more, page),
       { keepPreviousData: true, staleTime: 5000 }
     );
+
+  const { query, mutation } = useCustom();
 
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore, isPreviousData);
@@ -57,6 +63,26 @@ const CoinLists = (): JSX.Element => {
       setView(state);
     },
     []
+  );
+
+  useEffect(() => {
+    console.log('change', query.data);
+  }, [query.data]);
+
+  const addingFavorite = useCallback(
+    (coin: string) => () => {
+      console.log(query.data);
+
+      let temp;
+      if (!query.data) {
+        temp = [coin];
+      } else {
+        temp = (query.data as string[]).concat([coin]);
+      }
+      console.log('temp', temp);
+      mutation.mutate(temp);
+    },
+    [query.data]
   );
 
   return (
@@ -116,7 +142,12 @@ const CoinLists = (): JSX.Element => {
           {!isLoading ? (
             <>
               {data.map((coin: ICoin) => (
-                <CoinList key={coin.id} coin={coin} country={market} />
+                <CoinList
+                  key={coin.id}
+                  coin={coin}
+                  country={market}
+                  adding={addingFavorite}
+                />
               ))}
               {isFetching && (
                 <tr>

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { useMutation, useQuery } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { coinOrder, market } from '../type';
 
 export const getCoinList = async (
@@ -13,3 +15,50 @@ export const getCoinList = async (
 
   return data;
 };
+
+type StorageType = 'session' | 'local';
+
+const storageMap = {
+  local: localStorage,
+  session: sessionStorage
+};
+
+export function useStorageQuery<TData>({
+  type = 'session',
+  storageKey
+}: {
+  type?: StorageType;
+  storageKey: string;
+}) {
+  const getData = () => {
+    const data = storageMap[type].getItem(storageKey);
+
+    if (data === null) {
+      return null;
+    }
+
+    return JSON.parse(data) as TData;
+  };
+
+  const setData = (data: TData) => {
+    storageMap[type].setItem(storageKey, JSON.stringify(data));
+    return Promise.resolve();
+  };
+
+  const queryClient = useQueryClient();
+  const queryKey = ['storage', type, storageKey];
+
+  const query = useQuery({
+    queryKey,
+    queryFn: getData,
+    initialData: getData
+  });
+
+  const mutation = useMutation(setData, {
+    onSuccess: (a, b, c) => {
+      queryClient.setQueryData(queryKey, b);
+    }
+  });
+
+  return { query, mutation };
+}

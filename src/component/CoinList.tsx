@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ICoin, market } from '../domain/coin/type';
 import { checkState } from '../util';
 import {
@@ -11,16 +11,17 @@ import {
 interface ICoinList {
   coin: ICoin;
   country: market;
+  adding: (coin: string) => () => void;
 }
 
 const countryMoney = { krw: '₩', usd: '$', jpy: '¥', eur: '€' };
 
 const CoinList = (props: ICoinList): JSX.Element => {
-  const { coin, country } = props;
+  const { coin, country, adding } = props;
 
   return (
     <CoinListStyled>
-      <FavoriteStyled>🌑</FavoriteStyled>
+      <FavoriteStyled onClick={adding(coin.symbol)}>🌑</FavoriteStyled>
       {/*<FavoriteStyled>🌕</td>*/}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}
