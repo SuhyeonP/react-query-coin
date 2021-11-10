@@ -3,6 +3,7 @@ import { useMutation, useQuery } from 'react-query';
 import { useQueryClient } from 'react-query';
 import { coinOrder, market } from '../type';
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const getCoinList = async (
   market: market = 'krw',
   order: coinOrder = 'market_cap_desc',
@@ -23,6 +24,7 @@ const storageMap = {
   session: sessionStorage
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function useStorageQuery<TData>({
   type = 'session',
   storageKey
@@ -55,7 +57,7 @@ export function useStorageQuery<TData>({
   });
 
   const mutation = useMutation(setData, {
-    onSuccess: (a, b, c) => {
+    onSuccess: (a, b) => {
       queryClient.setQueryData(queryKey, b);
     }
   });

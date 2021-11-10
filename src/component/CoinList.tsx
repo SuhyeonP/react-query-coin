@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { ICoin, market } from '../domain/coin/type';
 import { checkState } from '../util';
 import {

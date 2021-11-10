@@ -17,17 +17,18 @@ const CoinLists = (): JSX.Element => {
   const pageViewList = [10, 30, 50];
   const [view, setView] = useState('all');
   const [market, setMarket] = useState<market>('krw');
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [order, setOrder] = useState<coinOrder>('market_cap_desc');
   const [perPage, setPerPage] = useState<number>(50);
   const [more, setMore] = useState<number>(perPage);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [page, setPage] = useState<number>(1);
 
-  const { data, isLoading, status, error, isFetching, isPreviousData } =
-    useQuery(
-      ['coins', market, order, more, page],
-      async () => await getCoinList(market, order, more, page),
-      { keepPreviousData: true, staleTime: 5000 }
-    );
+  const { data, isLoading, isFetching, isPreviousData } = useQuery(
+    ['coins', market, order, more, page],
+    async () => await getCoinList(market, order, more, page),
+    { keepPreviousData: true, staleTime: 5000 }
+  );
 
   const { query, mutation } = useCustom();
 
