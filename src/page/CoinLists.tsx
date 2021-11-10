@@ -143,20 +143,42 @@ const CoinLists = (): JSX.Element => {
         <tbody>
           {!isLoading ? (
             <>
-              {data.map((coin: ICoin) => (
-                <CoinList
-                  key={coin.id}
-                  coin={coin}
-                  country={market}
-                  adding={addingFavorite}
-                  excepting={excepting}
-                  favorite={
-                    query.data
-                      ? (query.data as string[]).indexOf(coin.symbol) !== -1
-                      : false
-                  }
-                />
-              ))}
+              {view === 'all'
+                ? data.map((coin: ICoin) => (
+                    <CoinList
+                      key={coin.id}
+                      coin={coin}
+                      country={market}
+                      adding={addingFavorite}
+                      excepting={excepting}
+                      favorite={
+                        query.data
+                          ? (query.data as string[]).indexOf(coin.symbol) !== -1
+                          : false
+                      }
+                    />
+                  ))
+                : query.data &&
+                  data
+                    .filter(
+                      (coin: ICoin) =>
+                        (query.data as string[]).indexOf(coin.symbol) !== -1
+                    )
+                    .map((coin: ICoin) => (
+                      <CoinList
+                        key={coin.id}
+                        coin={coin}
+                        country={market}
+                        adding={addingFavorite}
+                        excepting={excepting}
+                        favorite={
+                          query.data
+                            ? (query.data as string[]).indexOf(coin.symbol) !==
+                              -1
+                            : false
+                        }
+                      />
+                    ))}
               {isFetching && (
                 <tr>
                   <td colSpan={8}>...loading</td>
