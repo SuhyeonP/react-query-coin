@@ -54,7 +54,7 @@ const CoinList = (props: ICoinList): JSX.Element => {
         align="right"
         state={checkState(coin.price_change_percentage_7d_in_currency)}
       >
-        {coin.price_change_percentage_7d_in_currency.toFixed(2)}%
+        {coin.price_change_percentage_7d_in_currency?.toFixed(2)}%
       </VolumeColor>
       <CoinInfoTd align="right" minWidth="170px">
         {countryMoney[country]}&nbsp;

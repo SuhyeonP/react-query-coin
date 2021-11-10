@@ -14,10 +14,19 @@ export const CoinListsStyled = styled.div`
 
 interface ITableAlign {
   align: string;
+  minWidth?: string;
 }
 
-export const TableTitleAlign = styled.th<ITableAlign>(
-  ({ align }) => css`
+export const TableTitleAlign = styled.th<ITableAlign>(({ align, minWidth }) => {
+  const base = css`
     text-align: ${align};
-  `
-);
+  `;
+
+  if (minWidth) {
+    return css`
+      ${base};
+      min-width: ${minWidth};
+    `;
+  }
+  return base;
+});

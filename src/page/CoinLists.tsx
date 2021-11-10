@@ -129,15 +129,25 @@ const CoinLists = (): JSX.Element => {
       <CoinTableStyled>
         <thead>
           <tr>
-            <th colSpan={1} />
-            <TableTitleAlign align="left" colSpan={2}>
+            <TableTitleAlign align="center" minWidth="25px" />
+            <TableTitleAlign align="left" colSpan={2} minWidth="200px">
               자산
             </TableTitleAlign>
-            <TableTitleAlign align="right">Price</TableTitleAlign>
-            <TableTitleAlign align="right">1H</TableTitleAlign>
-            <TableTitleAlign align="right">24H</TableTitleAlign>
-            <TableTitleAlign align="right">7D</TableTitleAlign>
-            <TableTitleAlign align="right">24H Volume</TableTitleAlign>
+            <TableTitleAlign align="right" minWidth="130px">
+              Price
+            </TableTitleAlign>
+            <TableTitleAlign align="right" minWidth="80px">
+              1H
+            </TableTitleAlign>
+            <TableTitleAlign align="right" minWidth="80px">
+              24H
+            </TableTitleAlign>
+            <TableTitleAlign align="right" minWidth="80px">
+              7D
+            </TableTitleAlign>
+            <TableTitleAlign align="right" minWidth="170px">
+              24H Volume
+            </TableTitleAlign>
           </tr>
         </thead>
         <tbody>

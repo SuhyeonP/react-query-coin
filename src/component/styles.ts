@@ -49,4 +49,6 @@ export const CoinInfoTd = styled.td<IAlign>(({ align, minWidth }) => {
 
 export const FavoriteStyled = styled.td`
   cursor: pointer;
+
+  min-width: 25px;
 `;
