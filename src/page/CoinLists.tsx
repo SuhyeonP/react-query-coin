@@ -132,7 +132,7 @@ const CoinLists = (): JSX.Element => {
             <TableTitleAlign align="left" colSpan={2} minWidth="200px">
               자산
             </TableTitleAlign>
-            <TableTitleAlign align="right" minWidth="130px">
+            <TableTitleAlign align="right" minWidth="135px">
               Price
             </TableTitleAlign>
             <TableTitleAlign align="right" minWidth="80px">

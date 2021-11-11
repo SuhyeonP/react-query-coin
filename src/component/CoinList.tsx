@@ -34,7 +34,7 @@ const CoinList = (props: ICoinList): JSX.Element => {
       <CoinInfoTd align="left" minWidth="50px">
         {coin.symbol}
       </CoinInfoTd>
-      <CoinInfoTd align="right" minWidth="130px">
+      <CoinInfoTd align="right" minWidth="135px">
         {countryMoney[country]}&nbsp;
         {coin.current_price.toLocaleString('ko-KR')}
       </CoinInfoTd>
