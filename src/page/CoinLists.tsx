@@ -4,9 +4,11 @@ import { getCoinList, useStorageQuery } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
 import { deleteCommand } from '../util';
+import useFavorite from '../domain/coin/api/getFavorite';
+import Refactoring from '../component/Refactoring';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
-const useCustom = () => {
+export const useCustom = () => {
   return useStorageQuery({ storageKey: 'favorite' });
 };
 
@@ -27,8 +29,12 @@ const CoinLists = (): JSX.Element => {
     async () => await getCoinList(market, order, more, page),
     { keepPreviousData: true, staleTime: 5000 }
   );
+  const { query } = useCustom();
 
-  const { query, mutation } = useCustom();
+  const [favorite, loadingFavorite, favoriteFetching] = useFavorite(
+    query?.data || [],
+    market
+  );
 
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore, isPreviousData);
@@ -40,10 +46,6 @@ const CoinLists = (): JSX.Element => {
       );
     }
   }, [data, market, page, more, queryClient]);
-
-  useEffect(() => {
-    console.log(query.data);
-  }, [query.data]);
 
   const onChangeView = useCallback(e => {
     setView(e.target.value);
@@ -67,27 +69,6 @@ const CoinLists = (): JSX.Element => {
       setView(state);
     },
     []
-  );
-
-  const addingFavorite = useCallback(
-    (coin: string) => () => {
-      let temp;
-      if (!query.data) {
-        temp = [coin];
-      } else {
-        temp = (query.data as string[]).concat([coin]);
-      }
-      mutation.mutate(temp);
-    },
-    [query.data]
-  );
-
-  const excepting = useCallback(
-    (coin: string) => () => {
-      const temp = deleteCommand(query.data as string[], coin);
-      mutation.mutate(temp);
-    },
-    [query.data]
   );
 
   return (
@@ -154,59 +135,23 @@ const CoinLists = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {!isLoading ? (
+          {
             <>
-              {view === 'all'
-                ? data.map((coin: ICoin) => (
-                    <CoinList
-                      key={coin.id}
-                      coin={coin}
-                      country={market}
-                      adding={addingFavorite}
-                      excepting={excepting}
-                      favorite={
-                        query.data
-                          ? (query.data as string[]).indexOf(coin.id) !== -1
-                          : false
-                      }
-                    />
-                  ))
-                : query.data &&
-                  data
-                    .filter(
-                      (coin: ICoin) =>
-                        (query.data as string[]).indexOf(coin.id) !== -1
-                    )
-                    .map((coin: ICoin) => (
-                      <CoinList
-                        key={coin.id}
-                        coin={coin}
-                        country={market}
-                        adding={addingFavorite}
-                        excepting={excepting}
-                        favorite={
-                          query.data
-                            ? (query.data as string[]).indexOf(coin.id) !== -1
-                            : false
-                        }
-                      />
-                    ))}
-              {isFetching && (
+              <Refactoring
+                coins={view === 'all' ? data : favorite}
+                country={market}
+                fetching={view === 'all' ? isFetching : favoriteFetching}
+                loading={view === 'all' ? isLoading : loadingFavorite}
+              />
+              {view === 'all' && (
                 <tr>
-                  <td colSpan={8}>...loading</td>
+                  <td colSpan={8}>
+                    <button onClick={morePage}>more</button>
+                  </td>
                 </tr>
               )}
-              <tr>
-                <td colSpan={8}>
-                  <button onClick={morePage}>more</button>
-                </td>
-              </tr>
             </>
-          ) : (
-            <tr>
-              <td>loading</td>
-            </tr>
-          )}
+          }
         </tbody>
       </CoinTableStyled>
     </CoinListsStyled>

@@ -62,15 +62,3 @@ export function useStorageQuery<TData>({
 
   return { query, mutation };
 }
-
-export const getFavoriteCoins = async (
-  list: string[],
-  market: market
-): Promise<any> => {
-  const coinList = list.join('%2C');
-  const { data } = await axios.get(
-    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${market}&ids=${coinList}&order=market_cap_desc&per_page=100&page=1&sparkline=false&price_change_percentage=1h%2C24h%2C7d`
-  );
-
-  return data;
-};
