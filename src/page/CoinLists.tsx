@@ -35,16 +35,6 @@ const CoinLists = (): JSX.Element => {
     { keepPreviousData: true, staleTime: 5000 }
   );
 
-  const [coinList, setCoinList] = useState<ICoin[] | any>(data);
-
-  useEffect(() => {
-    if (view === 'all') {
-      setCoinList(data);
-    } else {
-      setCoinList(favorite);
-    }
-  }, [view]);
-
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore, isPreviousData);
     // todo 이게 뭔지
