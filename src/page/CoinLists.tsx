@@ -41,6 +41,10 @@ const CoinLists = (): JSX.Element => {
     }
   }, [data, market, page, more, queryClient]);
 
+  useEffect(() => {
+    console.log(query.data);
+  }, [query.data]);
+
   const onChangeView = useCallback(e => {
     setView(e.target.value);
   }, []);
@@ -162,7 +166,7 @@ const CoinLists = (): JSX.Element => {
                       excepting={excepting}
                       favorite={
                         query.data
-                          ? (query.data as string[]).indexOf(coin.symbol) !== -1
+                          ? (query.data as string[]).indexOf(coin.id) !== -1
                           : false
                       }
                     />
@@ -171,7 +175,7 @@ const CoinLists = (): JSX.Element => {
                   data
                     .filter(
                       (coin: ICoin) =>
-                        (query.data as string[]).indexOf(coin.symbol) !== -1
+                        (query.data as string[]).indexOf(coin.id) !== -1
                     )
                     .map((coin: ICoin) => (
                       <CoinList
@@ -182,8 +186,7 @@ const CoinLists = (): JSX.Element => {
                         excepting={excepting}
                         favorite={
                           query.data
-                            ? (query.data as string[]).indexOf(coin.symbol) !==
-                              -1
+                            ? (query.data as string[]).indexOf(coin.id) !== -1
                             : false
                         }
                       />

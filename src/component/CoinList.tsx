@@ -24,9 +24,9 @@ const CoinList = (props: ICoinList): JSX.Element => {
   return (
     <CoinListStyled>
       {favorite ? (
-        <FavoriteStyled onClick={excepting(coin.symbol)}>🌕</FavoriteStyled>
+        <FavoriteStyled onClick={excepting(coin.id)}>🌕</FavoriteStyled>
       ) : (
-        <FavoriteStyled onClick={adding(coin.symbol)}>🌑</FavoriteStyled>
+        <FavoriteStyled onClick={adding(coin.id)}>🌑</FavoriteStyled>
       )}
       <CoinInfoTd align="left" minWidth="150px">
         {coin.name}
