@@ -56,14 +56,6 @@ const CoinLists = (): JSX.Element => {
     }
   }, [data, market, page, more, queryClient]);
 
-  useEffect(() => {
-    console.log(query.data);
-  }, [query.data]);
-
-  const onChangeView = useCallback(e => {
-    setView(e.target.value);
-  }, []);
-
   const onChangeMarket = useCallback(e => {
     setMarket(e.target.value);
   }, []);
@@ -85,21 +77,19 @@ const CoinLists = (): JSX.Element => {
   );
 
   const addingFavorite = useCallback(
-    (coin: string) => () => {
+    (coin: string, type) => () => {
       let temp;
-      if (!query.data) {
-        temp = [coin];
-      } else {
-        temp = (query.data as string[]).concat([coin]);
-      }
-      mutation.mutate(temp);
-    },
-    [query.data]
-  );
 
-  const excepting = useCallback(
-    (coin: string) => () => {
-      const temp = deleteCommand(query.data as string[], coin);
+      if (!type) {
+        if (!query.data) {
+          temp = [coin];
+        } else {
+          temp = (query.data as string[]).concat([coin]);
+        }
+      } else {
+        temp = deleteCommand(query.data as string[], coin);
+      }
+
       mutation.mutate(temp);
     },
     [query.data]
@@ -121,7 +111,10 @@ const CoinLists = (): JSX.Element => {
       <br />
       {view === 'all' && (
         <>
-          <select value={view.toString()} onChange={onChangeView}>
+          <select
+            value={view.toString()}
+            onChange={e => setViewMode(e.target.value)}
+          >
             {viewOption.map(view => (
               <option value={view} key={view}>
                 {view === 'all' ? '전체보기' : '북마크 보기'}
@@ -179,7 +172,6 @@ const CoinLists = (): JSX.Element => {
                       coin={coin}
                       country={market}
                       adding={addingFavorite}
-                      excepting={excepting}
                       favorite={
                         query.data
                           ? (query.data as string[]).indexOf(coin.id) !== -1
@@ -203,7 +195,6 @@ const CoinLists = (): JSX.Element => {
                     coin={coin}
                     country={market}
                     adding={addingFavorite}
-                    excepting={excepting}
                     favorite={
                       query.data
                         ? (query.data as string[]).indexOf(coin.id) !== -1
