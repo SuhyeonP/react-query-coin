@@ -4,6 +4,8 @@ import { getCoinList, useStorageQuery } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
 import { deleteCommand } from '../util';
+import useFavorite from '../domain/coin/api/getFavorite';
+import Loading from '../component/Loading';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const useCustom = () => {
@@ -22,13 +24,26 @@ const CoinLists = (): JSX.Element => {
   const [more, setMore] = useState<number>(perPage);
   const [page] = useState<number>(1);
 
+  const { query, mutation } = useCustom();
+  const [favorite, favoriteLoading, favoriteFetching] = useFavorite(
+    query.data,
+    market
+  );
   const { data, isLoading, isFetching, isPreviousData } = useQuery(
     ['coins', market, order, more, page],
     async () => await getCoinList(market, order, more, page),
     { keepPreviousData: true, staleTime: 5000 }
   );
 
-  const { query, mutation } = useCustom();
+  const [coinList, setCoinList] = useState<ICoin[] | any>(data);
+
+  useEffect(() => {
+    if (view === 'all') {
+      setCoinList(data);
+    } else {
+      setCoinList(favorite);
+    }
+  }, [view]);
 
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore, isPreviousData);
@@ -156,8 +171,9 @@ const CoinLists = (): JSX.Element => {
         <tbody>
           {!isLoading ? (
             <>
-              {view === 'all'
-                ? data.map((coin: ICoin) => (
+              {view === 'all' ? (
+                <>
+                  {data.map((coin: ICoin) => (
                     <CoinList
                       key={coin.id}
                       coin={coin}
@@ -170,42 +186,35 @@ const CoinLists = (): JSX.Element => {
                           : false
                       }
                     />
-                  ))
-                : query.data &&
-                  data
-                    .filter(
-                      (coin: ICoin) =>
-                        (query.data as string[]).indexOf(coin.id) !== -1
-                    )
-                    .map((coin: ICoin) => (
-                      <CoinList
-                        key={coin.id}
-                        coin={coin}
-                        country={market}
-                        adding={addingFavorite}
-                        excepting={excepting}
-                        favorite={
-                          query.data
-                            ? (query.data as string[]).indexOf(coin.id) !== -1
-                            : false
-                        }
-                      />
-                    ))}
-              {isFetching && (
-                <tr>
-                  <td colSpan={8}>...loading</td>
-                </tr>
+                  ))}
+                  <Loading loading={isFetching} />
+                  <tr>
+                    <td colSpan={8}>
+                      <button onClick={morePage}>more</button>
+                    </td>
+                  </tr>
+                </>
+              ) : favorite && favoriteFetching ? (
+                <Loading loading={favoriteFetching} />
+              ) : (
+                favorite.map((coin: ICoin) => (
+                  <CoinList
+                    key={coin.id}
+                    coin={coin}
+                    country={market}
+                    adding={addingFavorite}
+                    excepting={excepting}
+                    favorite={
+                      query.data
+                        ? (query.data as string[]).indexOf(coin.id) !== -1
+                        : false
+                    }
+                  />
+                ))
               )}
-              <tr>
-                <td colSpan={8}>
-                  <button onClick={morePage}>more</button>
-                </td>
-              </tr>
             </>
           ) : (
-            <tr>
-              <td>loading</td>
-            </tr>
+            <Loading loading={view === 'all' ? isLoading : favoriteLoading} />
           )}
         </tbody>
       </CoinTableStyled>
