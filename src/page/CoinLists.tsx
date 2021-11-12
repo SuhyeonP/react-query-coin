@@ -162,34 +162,12 @@ const CoinLists = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {!isLoading ? (
-            <>
-              {view === 'all' ? (
-                <>
-                  {data.map((coin: ICoin) => (
-                    <CoinList
-                      key={coin.id}
-                      coin={coin}
-                      country={market}
-                      adding={addingFavorite}
-                      favorite={
-                        query.data
-                          ? (query.data as string[]).indexOf(coin.id) !== -1
-                          : false
-                      }
-                    />
-                  ))}
-                  <Loading loading={isFetching} />
-                  <tr>
-                    <td colSpan={8}>
-                      <button onClick={morePage}>more</button>
-                    </td>
-                  </tr>
-                </>
-              ) : favorite && favoriteFetching ? (
-                <Loading loading={favoriteFetching} />
-              ) : (
-                favorite.map((coin: ICoin) => (
+          {view === 'all' ? (
+            isLoading ? (
+              <Loading loading={isLoading} />
+            ) : (
+              <>
+                {data.map((coin: ICoin) => (
                   <CoinList
                     key={coin.id}
                     coin={coin}
@@ -201,11 +179,34 @@ const CoinLists = (): JSX.Element => {
                         : false
                     }
                   />
-                ))
-              )}
-            </>
+                ))}
+                <Loading loading={isFetching} />
+                <tr>
+                  <td colSpan={8}>
+                    <button onClick={morePage}>more</button>
+                  </td>
+                </tr>
+              </>
+            )
+          ) : favoriteLoading ? (
+            <Loading loading={favoriteLoading} />
           ) : (
-            <Loading loading={view === 'all' ? isLoading : favoriteLoading} />
+            <>
+              {favorite.map((coin: ICoin) => (
+                <CoinList
+                  key={coin.id}
+                  coin={coin}
+                  country={market}
+                  adding={addingFavorite}
+                  favorite={
+                    query.data
+                      ? (query.data as string[]).indexOf(coin.id) !== -1
+                      : false
+                  }
+                />
+              ))}
+              <Loading loading={favoriteFetching} />
+            </>
           )}
         </tbody>
       </CoinTableStyled>
