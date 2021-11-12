@@ -4,6 +4,8 @@ import { getCoinList, useStorageQuery } from '../domain/coin/api';
 import { coinOrder, ICoin, market } from '../domain/coin/type';
 import CoinList from '../component/CoinList';
 import { deleteCommand } from '../util';
+import useFavorite from '../domain/coin/api/getFavorite';
+import Loading from '../component/Loading';
 import { CoinListsStyled, CoinTableStyled, TableTitleAlign } from './styles';
 
 const useCustom = () => {
@@ -22,13 +24,26 @@ const CoinLists = (): JSX.Element => {
   const [more, setMore] = useState<number>(perPage);
   const [page] = useState<number>(1);
 
+  const { query, mutation } = useCustom();
+  const [favorite, favoriteLoading, favoriteFetching] = useFavorite(
+    query.data,
+    market
+  );
   const { data, isLoading, isFetching, isPreviousData } = useQuery(
     ['coins', market, order, more, page],
     async () => await getCoinList(market, order, more, page),
     { keepPreviousData: true, staleTime: 5000 }
   );
 
-  const { query, mutation } = useCustom();
+  const [coinList, setCoinList] = useState<ICoin[] | any>(data);
+
+  useEffect(() => {
+    if (view === 'all') {
+      setCoinList(data);
+    } else {
+      setCoinList(favorite);
+    }
+  }, [view]);
 
   useEffect(() => {
     console.log(isPreviousData || !data?.hasMore, isPreviousData);
@@ -40,14 +55,6 @@ const CoinLists = (): JSX.Element => {
       );
     }
   }, [data, market, page, more, queryClient]);
-
-  useEffect(() => {
-    console.log(query.data);
-  }, [query.data]);
-
-  const onChangeView = useCallback(e => {
-    setView(e.target.value);
-  }, []);
 
   const onChangeMarket = useCallback(e => {
     setMarket(e.target.value);
@@ -70,21 +77,19 @@ const CoinLists = (): JSX.Element => {
   );
 
   const addingFavorite = useCallback(
-    (coin: string) => () => {
+    (coin: string, type) => () => {
       let temp;
-      if (!query.data) {
-        temp = [coin];
-      } else {
-        temp = (query.data as string[]).concat([coin]);
-      }
-      mutation.mutate(temp);
-    },
-    [query.data]
-  );
 
-  const excepting = useCallback(
-    (coin: string) => () => {
-      const temp = deleteCommand(query.data as string[], coin);
+      if (!type) {
+        if (!query.data) {
+          temp = [coin];
+        } else {
+          temp = (query.data as string[]).concat([coin]);
+        }
+      } else {
+        temp = deleteCommand(query.data as string[], coin);
+      }
+
       mutation.mutate(temp);
     },
     [query.data]
@@ -106,7 +111,10 @@ const CoinLists = (): JSX.Element => {
       <br />
       {view === 'all' && (
         <>
-          <select value={view.toString()} onChange={onChangeView}>
+          <select
+            value={view.toString()}
+            onChange={e => setViewMode(e.target.value)}
+          >
             {viewOption.map(view => (
               <option value={view} key={view}>
                 {view === 'all' ? '전체보기' : '북마크 보기'}
@@ -154,58 +162,51 @@ const CoinLists = (): JSX.Element => {
           </tr>
         </thead>
         <tbody>
-          {!isLoading ? (
-            <>
-              {view === 'all'
-                ? data.map((coin: ICoin) => (
-                    <CoinList
-                      key={coin.id}
-                      coin={coin}
-                      country={market}
-                      adding={addingFavorite}
-                      excepting={excepting}
-                      favorite={
-                        query.data
-                          ? (query.data as string[]).indexOf(coin.id) !== -1
-                          : false
-                      }
-                    />
-                  ))
-                : query.data &&
-                  data
-                    .filter(
-                      (coin: ICoin) =>
-                        (query.data as string[]).indexOf(coin.id) !== -1
-                    )
-                    .map((coin: ICoin) => (
-                      <CoinList
-                        key={coin.id}
-                        coin={coin}
-                        country={market}
-                        adding={addingFavorite}
-                        excepting={excepting}
-                        favorite={
-                          query.data
-                            ? (query.data as string[]).indexOf(coin.id) !== -1
-                            : false
-                        }
-                      />
-                    ))}
-              {isFetching && (
+          {view === 'all' ? (
+            isLoading ? (
+              <Loading loading={isLoading} />
+            ) : (
+              <>
+                {data.map((coin: ICoin) => (
+                  <CoinList
+                    key={coin.id}
+                    coin={coin}
+                    country={market}
+                    adding={addingFavorite}
+                    favorite={
+                      query.data
+                        ? (query.data as string[]).indexOf(coin.id) !== -1
+                        : false
+                    }
+                  />
+                ))}
+                <Loading loading={isFetching} />
                 <tr>
-                  <td colSpan={8}>...loading</td>
+                  <td colSpan={8}>
+                    <button onClick={morePage}>more</button>
+                  </td>
                 </tr>
-              )}
-              <tr>
-                <td colSpan={8}>
-                  <button onClick={morePage}>more</button>
-                </td>
-              </tr>
-            </>
+              </>
+            )
+          ) : favoriteLoading ? (
+            <Loading loading={favoriteLoading} />
           ) : (
-            <tr>
-              <td>loading</td>
-            </tr>
+            <>
+              {favorite.map((coin: ICoin) => (
+                <CoinList
+                  key={coin.id}
+                  coin={coin}
+                  country={market}
+                  adding={addingFavorite}
+                  favorite={
+                    query.data
+                      ? (query.data as string[]).indexOf(coin.id) !== -1
+                      : false
+                  }
+                />
+              ))}
+              <Loading loading={favoriteFetching} />
+            </>
           )}
         </tbody>
       </CoinTableStyled>
