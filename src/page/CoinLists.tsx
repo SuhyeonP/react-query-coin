@@ -61,6 +61,7 @@ const CoinLists = (): JSX.Element => {
 
   const setViewMode = useCallback(
     (state: string) => () => {
+      console.log(state);
       setView(state);
     },
     []
@@ -103,11 +104,11 @@ const CoinLists = (): JSX.Element => {
         <>
           <select
             value={view.toString()}
-            onChange={e => setViewMode(e.target.value)}
+            onChange={e => setView(e.target.value)}
           >
-            {viewOption.map(view => (
-              <option value={view} key={view}>
-                {view === 'all' ? '전체보기' : '북마크 보기'}
+            {viewOption.map(select => (
+              <option value={select} key={select}>
+                {select === 'all' ? '전체보기' : '북마크 보기'}
               </option>
             ))}
           </select>
