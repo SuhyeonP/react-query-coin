@@ -1,3 +1,5 @@
+* [view](https://affectionate-wing-4bace0.netlify.app/)
+
 * cra basic-template with std
 * using router
-[view](https://affectionate-wing-4bace0.netlify.app/)
+* react-query 사용
